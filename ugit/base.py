@@ -18,4 +18,5 @@ def write_tree(directory="."):
 
 
 def is_ignored(path):
-    return ".ugit" in path.split("/")
+    ignore_dirs = ['.ugit', 'venv', '.git', 'ugit.egg-info']
+    return any(ignore_dir in path.split("/") for ignore_dir in ignore_dirs)
