@@ -71,6 +71,14 @@ def read_tree(tree_oid):
             f.write(data.get_object(oid))
 
 
+def commit(message):
+    commit = f"tree {write_tree()}\n"
+    commit += "\n"
+    commit += f"{message}\n"
+
+    return data.hash_object(commit.encode(), "commit")
+
+
 def is_ignored(path):
     ignore_dirs = ['.ugit', 'venv', '.git', 'ugit.egg-info']
     return any(ignore_dir in path.split("/") for ignore_dir in ignore_dirs)
