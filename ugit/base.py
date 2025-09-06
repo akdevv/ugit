@@ -13,7 +13,7 @@ def write_tree(directory="."):
             if entry.is_file(follow_symlinks=False):
                 type_ = "blob"
                 with open(full, "rb") as f:
-                    oid = data.hash_object(f.read)
+                    oid = data.hash_object(f.read())
             elif entry.is_dir(follow_symlinks=False):
                 type_ = "tree"
                 oid = write_tree(full)
@@ -21,7 +21,7 @@ def write_tree(directory="."):
 
     tree = "".join(f"{type_} {oid} {name}\n"
                    for name, oid, type_ in sorted(entires))
-    return data.data.hash_object(tree.encode(), "tree")
+    return data.hash_object(tree.encode(), "tree")
 
 
 def _iter_tree_entries(oid):
