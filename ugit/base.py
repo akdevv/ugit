@@ -1,3 +1,4 @@
+from ntpath import dirname
 import os
 from . import data
 
@@ -48,7 +49,22 @@ def get_tree(oid, base_path=""):
     return result
 
 
+def _empty_current_directory():
+    for root, dirnames, filenames in os.walk(".", topdown=False):
+        for filename in filenames:
+            path = os.path.relpath(f"{root}/{filename}")
+            if is_ignored(path) or not os.path.isfile(path):
+                continue
+            os.remove(path)
+        try:
+            os.rmdir(path)
+        except (FileNotFoundError, OSError):
+            # Deletion might file in case of ignored files, but that's OK.
+            pass
+
+
 def read_tree(tree_oid):
+    _empty_current_directory()
     for path, oid in get_tree(tree_oid, base_path="./").items():
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "wb") as f:
